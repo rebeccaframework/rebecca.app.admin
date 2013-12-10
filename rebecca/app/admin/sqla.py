@@ -32,7 +32,11 @@ class LengthTypeConvert(object):
 
     def __call__(self, col):
         sqla_type = col.type
-        validator = c.Length(0, sqla_type.length)
+        max_len = sqla_type.length
+        if max_len:
+            validator = c.Length(0, sqla_type.length)
+        else:
+            validator = None
         return c.SchemaNode(self.typ(),
                             validator=validator,
                             name=col.name)
