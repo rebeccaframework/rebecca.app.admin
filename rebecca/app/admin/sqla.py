@@ -22,11 +22,19 @@ class SimpleTypeConvert(object):
     def __call__(self, sqla_type):
         return self.typ()
 
+
+class LengthTypeConvert(object):
+    def __init__(self, typ):
+        self.typ = typ
+
+    def __call__(self, sqla_type):
+        return self.typ()
+
 default_type_map = {
     types.Boolean: SimpleTypeConvert(c.Boolean),
-    types.String: SimpleTypeConvert(c.String),
+    types.String: LengthTypeConvert(c.String),
     types.Integer: SimpleTypeConvert(c.Integer),
-    types.Unicode: SimpleTypeConvert(c.String),
+    types.Unicode: LengthTypeConvert(c.String),
     types.Date: SimpleTypeConvert(c.Date),
     types.DateTime: SimpleTypeConvert(c.DateTime),
 }
