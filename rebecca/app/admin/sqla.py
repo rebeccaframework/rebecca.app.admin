@@ -17,18 +17,25 @@ class SQLAModelAdmin(object):
 
 class SimpleTypeConvert(object):
     def __init__(self, typ):
+        typ = getattr(typ, 'impl', typ)
         self.typ = typ
 
-    def __call__(self, sqla_type):
-        return self.typ()
+    def __call__(self, col):
+        return c.SchemaNode(self.typ(),
+                            name=col.name)
 
 
 class LengthTypeConvert(object):
     def __init__(self, typ):
+        typ = getattr(typ, 'impl', typ)
         self.typ = typ
 
-    def __call__(self, sqla_type):
-        return self.typ()
+    def __call__(self, col):
+        sqla_type = col.type
+        validator = c.Length(0, sqla_type.length)
+        return c.SchemaNode(self.typ(),
+                            validator=validator,
+                            name=col.name)
 
 default_type_map = {
     types.Boolean: SimpleTypeConvert(c.Boolean),
@@ -44,11 +51,11 @@ class DefaultTypeMapper(object):
     def __init__(self):
         self.mapps = default_type_map
 
-    def __call__(self, sqla_type):
+    def __call__(self, col):
         """ convert from sqla type to colander schema type"""
         for col_type, colander_type in default_type_map.items():
-            if isinstance(sqla_type, col_type):
-                return colander_type(sqla_type)
+            if isinstance(col.type, col_type):
+                return colander_type(col)
 
 
 default_type_mapper = DefaultTypeMapper()
@@ -59,7 +66,6 @@ def create_schema(model, schema_type_mapper=default_type_mapper):
 
     schema = c.MappingSchema()
     for col in mapper.columns:
-        typ = getattr(col.type, 'impl', col.type)
-        schema.add(c.SchemaNode(schema_type_mapper(typ),
-                                name=col.name))
+        schema.add(schema_type_mapper(col))
+
     return schema
