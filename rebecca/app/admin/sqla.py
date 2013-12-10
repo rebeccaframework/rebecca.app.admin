@@ -15,13 +15,20 @@ class SQLAModelAdmin(object):
         self.schema = create_schema(model)
 
 
+class SimpleTypeConvert(object):
+    def __init__(self, typ):
+        self.typ = typ
+
+    def __call__(self, sqla_type):
+        return self.typ()
 
 default_type_map = {
-    types.String: c.String,
-    types.Integer: c.Integer,
-    types.Unicode: c.String,
-    types.Date: c.Date,
-    types.DateTime: c.DateTime,
+    types.Boolean: SimpleTypeConvert(c.Boolean),
+    types.String: SimpleTypeConvert(c.String),
+    types.Integer: SimpleTypeConvert(c.Integer),
+    types.Unicode: SimpleTypeConvert(c.String),
+    types.Date: SimpleTypeConvert(c.Date),
+    types.DateTime: SimpleTypeConvert(c.DateTime),
 }
 
 
@@ -29,11 +36,11 @@ class DefaultTypeMapper(object):
     def __init__(self):
         self.mapps = default_type_map
 
-    def __call__(self, typ):
+    def __call__(self, sqla_type):
         """ convert from sqla type to colander schema type"""
         for col_type, colander_type in default_type_map.items():
-            if isinstance(typ, col_type):
-                return colander_type
+            if isinstance(sqla_type, col_type):
+                return colander_type(sqla_type)
 
 
 default_type_mapper = DefaultTypeMapper()

@@ -33,6 +33,6 @@ class Testadd_admin_model(unittest.TestCase):
         compare(id, C(c.SchemaNode,
                       name='id',
                       title='Id',
-                      typ=c.Integer,
+                      typ=C(c.Integer),
                       children=[],
                       _order=1))
