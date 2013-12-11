@@ -13,6 +13,7 @@ requires = [
 
 tests_require = [
     "testfixtures",
+    "webtest",
 ]
 
 setup(name="rebecca.app.admin",

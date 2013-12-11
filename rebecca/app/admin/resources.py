@@ -1,7 +1,14 @@
-from .interfaces import IModelAdmin
+import logging
+from zope.interface import implementer
+from .interfaces import IModelAdmin, IAdminSite
 
 
+logger = logging.getLogger(__name__)
+
+
+@implementer(IAdminSite)
 class AdminSite(object):
+    __name__ = __parent__ = None
 
     def __init__(self, request):
         reg = request.registry
@@ -12,4 +19,5 @@ class AdminSite(object):
         return iter(self.model_admins)
 
     def __getitem__(self, key):
-        return self.model_admins[key]
+        model_admin = self.model_admins[key]
+        return model_admin

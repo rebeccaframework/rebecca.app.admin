@@ -6,3 +6,7 @@ class IModelAdmin(Interface):
     name = Attribute(u"name of function")
     model = Attribute(u"model to administrait")
     schema = Attribute(u"schema for model")
+
+
+class IAdminSite(Interface):
+    """ admin tool site"""

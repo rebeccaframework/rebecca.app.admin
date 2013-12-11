@@ -6,14 +6,16 @@ reg_prefix = 'rebecca.admin.'
 def add_admin_model(config, model, name=None):
     """ add model to admin
     """
-    model_name = model.__name__
+    model = config.maybe_dotted(model)
+    model_name = model.__name__.lower()
+
     if name is None:
         name = model_name
     reg = config.registry
     def register():
-        admin = SQLAModelAdmin(name=name,
+        model_admin = SQLAModelAdmin(name=name,
                            model=model)
-        reg.registerUtility(admin,
+        reg.registerUtility(model_admin,
                             name=name)
 
     reg_name = reg_prefix + name

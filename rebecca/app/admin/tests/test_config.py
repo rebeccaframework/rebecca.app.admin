@@ -20,7 +20,8 @@ class Testadd_admin_model(unittest.TestCase):
         from ..testing import DummySQLAModel
         import colander as c
         self._callFUT(self.config, DummySQLAModel, name="dummy")
-        result = self.config.registry.getUtility(IModelAdmin, name="dummy")
+        result = self.config.registry.getUtility(IModelAdmin,
+                                                 name="dummy")
 
 
 
@@ -35,4 +36,52 @@ class Testadd_admin_model(unittest.TestCase):
                       title='Id',
                       typ=C(c.Integer),
                       children=[],
-                      _order=1))
+                      strict=False))
+
+    def test_without_name(self):
+        from ..interfaces import IModelAdmin
+        from ..sqla import SQLAModelAdmin
+        from ..testing import DummySQLAModel
+        import colander as c
+        self._callFUT(self.config, DummySQLAModel)
+        result = self.config.registry.getUtility(IModelAdmin,
+                                                 name="dummysqlamodel")
+
+
+
+        compare(result, C(SQLAModelAdmin,
+                          name='dummysqlamodel',
+                          strict=False,
+                          model=DummySQLAModel))
+        schema = result.schema
+        id = schema['id']
+        compare(id, C(c.SchemaNode,
+                      name='id',
+                      title='Id',
+                      typ=C(c.Integer),
+                      children=[],
+                      strict=False))
+
+    def test_by_dotted_name(self):
+        from ..interfaces import IModelAdmin
+        from ..sqla import SQLAModelAdmin
+        import colander as c
+        self._callFUT(self.config,
+                      'rebecca.app.admin.testing.DummySQLAModel')
+        result = self.config.registry.getUtility(IModelAdmin,
+                                                 name="dummysqlamodel")
+
+
+
+        compare(result, C(SQLAModelAdmin,
+                          name='dummysqlamodel',
+                          strict=False))
+
+        schema = result.schema
+        id = schema['id']
+        compare(id, C(c.SchemaNode,
+                      name='id',
+                      title='Id',
+                      typ=C(c.Integer),
+                      children=[],
+                      strict=False))

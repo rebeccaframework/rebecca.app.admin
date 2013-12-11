@@ -6,6 +6,7 @@ from sqlalchemy.inspection import inspect
 from zope.interface import implementer
 from .interfaces import IModelAdmin
 
+
 @implementer(IModelAdmin)
 class SQLAModelAdmin(object):
 
