@@ -20,7 +20,7 @@ class DummySQLAModel(Base):
     __tablename__ = 'dummy_table'
 
     id = Column(Integer, primary_key=True)
-
+    value = Column(Integer)
 
 class Person(Base):
     __tablename__ = 'persons'

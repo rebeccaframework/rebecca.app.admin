@@ -23,7 +23,6 @@ class SQLAModelAdminFactory(object):
         admin.__parent__ = parent
         return admin
 
-# TODO: rewrite to adapter (to locatable)
 @implementer(IModelAdmin)
 class SQLAModelAdmin(object):
 
@@ -97,6 +96,8 @@ def create_schema(model, schema_type_mapper=default_type_mapper):
 
     schema = c.MappingSchema()
     for col in mapper.columns:
+        if col.primary_key:
+            continue
         schema.add(schema_type_mapper(col))
 
     return schema

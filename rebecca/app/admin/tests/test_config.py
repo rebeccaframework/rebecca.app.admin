@@ -37,10 +37,10 @@ class Testadd_admin_model(unittest.TestCase):
                           strict=False,
                           model=DummySQLAModel))
         schema = result.schema
-        id = schema['id']
+        id = schema['value']
         compare(id, C(c.SchemaNode,
-                      name='id',
-                      title='Id',
+                      name='value',
+                      title='Value',
                       typ=C(c.Integer),
                       children=[],
                       strict=False))
@@ -63,10 +63,10 @@ class Testadd_admin_model(unittest.TestCase):
                           strict=False,
                           model=DummySQLAModel))
         schema = result.schema
-        id = schema['id']
+        id = schema['value']
         compare(id, C(c.SchemaNode,
-                      name='id',
-                      title='Id',
+                      name='value',
+                      title='Value',
                       typ=C(c.Integer),
                       children=[],
                       strict=False))
@@ -89,10 +89,10 @@ class Testadd_admin_model(unittest.TestCase):
                           strict=False))
 
         schema = result.schema
-        id = schema['id']
+        id = schema['value']
         compare(id, C(c.SchemaNode,
-                      name='id',
-                      title='Id',
+                      name='value',
+                      title='Value',
                       typ=C(c.Integer),
                       children=[],
                       strict=False))
