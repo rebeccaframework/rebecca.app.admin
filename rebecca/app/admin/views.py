@@ -1,3 +1,4 @@
+from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 from webhelpers2.html import HTML, escape, literal
 from deform import ValidationFailure
@@ -39,7 +40,16 @@ class ModelAdminView(object):
         if self.request.method == 'POST':
             controls = self.request.params.items()
             try:
-                form.validate(controls)
+                params =form.validate(controls)
+                item = self.context.add(params)
+                del self.request.matchdict['traverse']
+                location = self.request.resource_url(
+                    self.context,
+                    route_name=self.request.matched_route.name,
+                    route_kw=self.request.matchdict)
+
+                return HTTPFound(location=location)
+
             except ValidationFailure as e:
                 return dict(form=e.render(), resource_tags=resource_tags)
         return dict(form=form.render(), resource_tags=resource_tags)

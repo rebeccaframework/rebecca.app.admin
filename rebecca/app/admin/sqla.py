@@ -41,6 +41,9 @@ class SQLAModelAdmin(object):
     def __getitem__(self, key):
         return self.repository(key)
 
+    def add(self, values):
+        return self.repository.new_item(**values)
+
 class SimpleTypeConvert(object):
     def __init__(self, typ):
         typ = getattr(typ, 'impl', typ)
@@ -96,7 +99,7 @@ def create_schema(model, schema_type_mapper=default_type_mapper):
 
     schema = c.MappingSchema()
     for col in mapper.columns:
-        if col.primary_key:
+        if col.primary_key and col.autoincrement:
             continue
         schema.add(schema_type_mapper(col))
 
