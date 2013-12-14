@@ -20,3 +20,9 @@ class Person(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(10))
+
+
+def init(engine):
+    DBSession.remove()
+    DBSession.configure(bind=engine)
+    Base.metadata.create_all(bind=engine)
