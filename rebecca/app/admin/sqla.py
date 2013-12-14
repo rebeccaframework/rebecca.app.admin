@@ -19,8 +19,10 @@ class SQLAModelAdmin(object):
 
         # TODO: use inspect primary key
         self.repository = SQLARepository(model,
-                                         "id", sessionmaker())
+                                         "id", sessionmaker)
 
+    def items(self):
+        return iter(self.repository)
 
 class SimpleTypeConvert(object):
     def __init__(self, typ):

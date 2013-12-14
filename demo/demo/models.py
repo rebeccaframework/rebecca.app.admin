@@ -25,4 +25,11 @@ class Person(Base):
 def init(engine):
     DBSession.remove()
     DBSession.configure(bind=engine)
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
+
+    for i in range(10):
+        person = Person(name='person {0:03d}'.format(i))
+        DBSession.add(person)
+    import transaction
+    transaction.commit()

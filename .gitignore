@@ -5,3 +5,4 @@ bin
 develop-eggs
 env
 *.egg-info
+*.sqlite

@@ -5,6 +5,11 @@ import webtest
 class FunctionalTest(unittest.TestCase):
     def _makeOne(self, *args, **kwargs):
         from pyramid.config import Configurator
+        from rebecca.app.admin.testing import DBSession, Base
+        from sqlalchemy import create_engine
+        engine = create_engine('sqlite:///')
+        Base.metadata.create_all(bind=engine)
+        DBSession.configure(bind=engine)
 
         config = Configurator()
         config.include('rebecca.app.admin')

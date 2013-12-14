@@ -9,7 +9,7 @@ class ModelAdminView(object):
         self.context = context
         self.request = request
 
-    @view_config()
+    @view_config(renderer="rebecca.app.admin:templates/index_models.mako")
     def index(self):
         """ show grid of members"""
         return dict()
