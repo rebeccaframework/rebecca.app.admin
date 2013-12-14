@@ -8,12 +8,12 @@ from rebecca.repository.sqla import SQLARepository
 from zope.interface import implementer
 from .interfaces import IModelAdmin
 
-
+# TODO: rewrite to adapter (to locatable)
 @implementer(IModelAdmin)
 class SQLAModelAdmin(object):
 
     def __init__(self, name, model, sessionmaker):
-        self.name = name
+        self.__name__ = self.name = name
         self.model = model
         self.schema = create_schema(model)
 
@@ -23,6 +23,9 @@ class SQLAModelAdmin(object):
 
     def items(self):
         return iter(self.repository)
+
+    def __getitem__(self, key):
+        return self.repository(key)
 
 class SimpleTypeConvert(object):
     def __init__(self, typ):
