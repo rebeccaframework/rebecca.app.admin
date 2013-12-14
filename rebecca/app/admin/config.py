@@ -3,18 +3,20 @@
 from .sqla import SQLAModelAdmin
 
 reg_prefix = 'rebecca.admin.'
-def add_admin_model(config, model, name=None):
+def add_admin_model(config, model, sessionmaker, name=None):
     """ add model to admin
     """
     model = config.maybe_dotted(model)
     model_name = model.__name__.lower()
+    sessionmaker = config.maybe_dotted(sessionmaker)
 
     if name is None:
         name = model_name
     reg = config.registry
     def register():
         model_admin = SQLAModelAdmin(name=name,
-                           model=model)
+                                     sessionmaker=sessionmaker,
+                                     model=model)
         reg.registerUtility(model_admin,
                             name=name)
 

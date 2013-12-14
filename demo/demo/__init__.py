@@ -7,5 +7,6 @@ def main(global_conf, **settings):
     models.init(engine)
 
     config = Configurator(settings=settings)
-    config.add_admin_model('.models.Person')
+    config.add_admin_model('.models.Person',
+                           '.models.DBSession')
     return config.make_wsgi_app()

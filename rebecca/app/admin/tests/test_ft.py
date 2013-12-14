@@ -8,7 +8,9 @@ class FunctionalTest(unittest.TestCase):
 
         config = Configurator()
         config.include('rebecca.app.admin')
-        config.add_admin_model('rebecca.app.admin.testing.Person')
+        config.add_admin_model(
+            'rebecca.app.admin.testing.Person',
+            sessionmaker='rebecca.app.admin.testing.DBSession')
         return config.make_wsgi_app()
 
     def test_it(self):

@@ -2,6 +2,10 @@ import unittest
 from testfixtures import compare, Comparison as C
 from pyramid import testing
 
+class DummySession(object):
+    def __cal__(self):
+        return
+
 class Testadd_admin_model(unittest.TestCase):
 
     def setUp(self):
@@ -19,7 +23,9 @@ class Testadd_admin_model(unittest.TestCase):
         from ..sqla import SQLAModelAdmin
         from ..testing import DummySQLAModel
         import colander as c
-        self._callFUT(self.config, DummySQLAModel, name="dummy")
+        self._callFUT(self.config, DummySQLAModel,
+                      sessionmaker=DummySession,
+                      name="dummy")
         result = self.config.registry.getUtility(IModelAdmin,
                                                  name="dummy")
 
@@ -43,7 +49,8 @@ class Testadd_admin_model(unittest.TestCase):
         from ..sqla import SQLAModelAdmin
         from ..testing import DummySQLAModel
         import colander as c
-        self._callFUT(self.config, DummySQLAModel)
+        self._callFUT(self.config, DummySQLAModel,
+                      sessionmaker=DummySession)
         result = self.config.registry.getUtility(IModelAdmin,
                                                  name="dummysqlamodel")
 
@@ -67,7 +74,8 @@ class Testadd_admin_model(unittest.TestCase):
         from ..sqla import SQLAModelAdmin
         import colander as c
         self._callFUT(self.config,
-                      'rebecca.app.admin.testing.DummySQLAModel')
+                      sessionmaker=DummySession,
+                      model='rebecca.app.admin.testing.DummySQLAModel')
         result = self.config.registry.getUtility(IModelAdmin,
                                                  name="dummysqlamodel")
 

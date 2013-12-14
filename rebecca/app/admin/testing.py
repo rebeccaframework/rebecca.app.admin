@@ -4,9 +4,17 @@ from sqlalchemy import (
     Integer,
     Unicode,
 )
+from sqlalchemy.orm import (
+    sessionmaker,
+    scoped_session,
+)
 from sqlalchemy.ext.declarative import declarative_base
+from zope.sqlalchemy import ZopeTransactionExtension
 
 Base = declarative_base()
+DBSession = scoped_session(
+    sessionmaker(extension=ZopeTransactionExtension()))
+
 
 class DummySQLAModel(Base):
     __tablename__ = 'dummy_table'

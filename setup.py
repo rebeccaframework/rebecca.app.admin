@@ -9,6 +9,7 @@ requires = [
     "pyramid-layout",
     "sqlalchemy",
     "zope.sqlalchemy",
+    "rebecca.repository",
 ]
 
 tests_require = [

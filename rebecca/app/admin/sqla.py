@@ -3,6 +3,8 @@ import colander as c
 from sqlalchemy import types
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.inspection import inspect
+from rebecca.repository.sqla import SQLARepository
+
 from zope.interface import implementer
 from .interfaces import IModelAdmin
 
@@ -10,10 +12,14 @@ from .interfaces import IModelAdmin
 @implementer(IModelAdmin)
 class SQLAModelAdmin(object):
 
-    def __init__(self, name, model):
+    def __init__(self, name, model, sessionmaker):
         self.name = name
         self.model = model
         self.schema = create_schema(model)
+
+        # TODO: use inspect primary key
+        self.repository = SQLARepository(model,
+                                         "id", sessionmaker())
 
 
 class SimpleTypeConvert(object):
