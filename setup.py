@@ -11,6 +11,7 @@ requires = [
     "zope.sqlalchemy",
     "rebecca.repository",
     "pyramid_mako",
+    "webhelpers2>=2.0b5",
 ]
 
 tests_require = [

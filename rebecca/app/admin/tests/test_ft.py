@@ -25,3 +25,4 @@ class FunctionalTest(unittest.TestCase):
         self.assertIn('http://localhost/person', res)
 
         app.get('http://localhost/person')
+        app.get('http://localhost/person/@@new')
