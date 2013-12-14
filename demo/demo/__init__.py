@@ -7,6 +7,8 @@ def main(global_conf, **settings):
     models.init(engine)
 
     config = Configurator(settings=settings)
+    config.include('rebecca.app.admin',
+                   route_prefix='/admin')
     config.add_admin_model('.models.Person',
                            '.models.DBSession')
     return config.make_wsgi_app()

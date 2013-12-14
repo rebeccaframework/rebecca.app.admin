@@ -10,6 +10,7 @@ requires = [
     "sqlalchemy",
     "zope.sqlalchemy",
     "rebecca.repository",
+    "pyramid_mako",
 ]
 
 tests_require = [
