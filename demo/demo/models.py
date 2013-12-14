@@ -2,6 +2,7 @@ from sqlalchemy import (
     Column,
     Integer,
     Unicode,
+    Date,
 )
 from sqlalchemy.orm import (
     sessionmaker,
@@ -20,6 +21,7 @@ class Person(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(10))
+    birthday = Column(Date)
 
     def __unicode__(self):
         return self.name
