@@ -13,7 +13,11 @@ class AdminSite(object):
     def __init__(self, request):
         reg = request.registry
         self.request = request
-        self.model_admins = dict(reg.getAdapters((self,), IModelAdmin))
+        admins = dict(reg.getAdapters((self,), IModelAdmin))
+        self.model_admins = admins
+        self.categoried_admins = {}
+        for admin in admins.values():
+            self.categoried_admins[admin.category] = self.categoried_admins.get(admin.category, []) + [admin]
         logger.debug('admins {admins}'.format(admins=self.model_admins))
 
     def __iter__(self):
@@ -25,3 +29,10 @@ class AdminSite(object):
         logger.debug('{key} {resource}'.format(key=key,
                                                resource=model_admin))
         return model_admin
+
+    @property
+    def categories(self):
+        return sorted(self.categoried_admins.keys())
+
+    def get_categoried_admins(self, category):
+        return self.categoried_admins[category]

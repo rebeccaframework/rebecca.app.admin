@@ -44,14 +44,16 @@ class TestAdminSite(unittest.TestCase):
         compare(result, C(testing.DummyResource))
 
 class DummyModelAdmin(object):
-    def __init__(self, name=None, model=None, schema=None):
+    def __init__(self, name=None, model=None, schema=None, category=None):
         self.name = name
         self.model = model
         self.schema = schema
+        self.category = category
 
     def __call__(self, parent):
         return testing.DummyResource(
             name=self.name,
             model=self.model,
             schema=self.schema,
+            category=self.category,
             __parent__=parent)

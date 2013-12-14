@@ -29,6 +29,18 @@ class Person(Base):
     def __html__(self):
         return self.name
 
+class Job(Base):
+    __tablename__ = 'job'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(10))
+
+class Company(Base):
+    __tablename__ = 'company'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(10))
+
 
 def init(engine):
     DBSession.remove()

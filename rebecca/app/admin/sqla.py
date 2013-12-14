@@ -12,24 +12,27 @@ from .interfaces import IModelAdmin, IModelAdminFactory
 @implementer(IModelAdminFactory)
 class SQLAModelAdminFactory(object):
 
-    def __init__(self, name, model, sessionmaker):
+    def __init__(self, name, model, sessionmaker, category):
         self.name = name
         self.model = model
         self.schema = create_schema(model)
         self.sessionmaker = sessionmaker
+        self.category = category
 
     def __call__(self, parent):
-        admin = SQLAModelAdmin(self.name, self.model, self.sessionmaker)
+        admin = SQLAModelAdmin(
+            self.name, self.model, self.sessionmaker, self.category)
         admin.__parent__ = parent
         return admin
 
 @implementer(IModelAdmin)
 class SQLAModelAdmin(object):
 
-    def __init__(self, name, model, sessionmaker):
+    def __init__(self, name, model, sessionmaker, category):
         self.__name__ = self.name = name
         self.model = model
         self.schema = create_schema(model)
+        self.category = category
 
         # TODO: use inspect primary key
         self.repository = SQLARepository(model,
