@@ -1,6 +1,8 @@
 """ config directives
 """
-from .sqla import SQLAModelAdmin
+from .sqla import SQLAModelAdminFactory
+from .interfaces import IAdminSite, IModelAdmin
+
 
 reg_prefix = 'rebecca.admin.'
 def add_admin_model(config, model, sessionmaker, name=None):
@@ -14,10 +16,13 @@ def add_admin_model(config, model, sessionmaker, name=None):
         name = model_name
     reg = config.registry
     def register():
-        model_admin = SQLAModelAdmin(name=name,
-                                     sessionmaker=sessionmaker,
-                                     model=model)
-        reg.registerUtility(model_admin,
+        model_admin = SQLAModelAdminFactory(
+            name=name,
+            sessionmaker=sessionmaker,
+            model=model)
+        reg.registerAdapter(model_admin,
+                            [IAdminSite],
+                            IModelAdmin,
                             name=name)
 
     reg_name = reg_prefix + name

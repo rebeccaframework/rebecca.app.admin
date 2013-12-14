@@ -6,7 +6,22 @@ from sqlalchemy.inspection import inspect
 from rebecca.repository.sqla import SQLARepository
 
 from zope.interface import implementer
-from .interfaces import IModelAdmin
+from .interfaces import IModelAdmin, IModelAdminFactory
+
+
+@implementer(IModelAdminFactory)
+class SQLAModelAdminFactory(object):
+
+    def __init__(self, name, model, sessionmaker):
+        self.name = name
+        self.model = model
+        self.schema = create_schema(model)
+        self.sessionmaker = sessionmaker
+
+    def __call__(self, parent):
+        admin = SQLAModelAdmin(self.name, self.model, self.sessionmaker)
+        admin.__parent__ = parent
+        return admin
 
 # TODO: rewrite to adapter (to locatable)
 @implementer(IModelAdmin)

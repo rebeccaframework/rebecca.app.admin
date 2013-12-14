@@ -13,7 +13,7 @@ class AdminSite(object):
     def __init__(self, request):
         reg = request.registry
         self.request = request
-        self.model_admins = dict(reg.getUtilitiesFor(IModelAdmin))
+        self.model_admins = dict(reg.getAdapters((self,), IModelAdmin))
         logger.debug('admins {admins}'.format(admins=self.model_admins))
 
     def __iter__(self):

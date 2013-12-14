@@ -1,5 +1,5 @@
 import unittest
-from testfixtures import compare
+from testfixtures import compare, Comparison as C
 from pyramid import testing
 
 
@@ -19,8 +19,9 @@ class TestAdminSite(unittest.TestCase):
         return self._getTarget()(*args, **kwargs)
 
     def test_iter(self):
-        from ..interfaces import IModelAdmin
-        self.config.registry.registerUtility(DummyModelAdmin(),
+        from ..interfaces import IModelAdmin, IAdminSite
+        self.config.registry.registerAdapter(DummyModelAdmin(),
+                                             [IAdminSite],
                                              IModelAdmin,
                                              name='dummy')
         request = testing.DummyRequest()
@@ -30,19 +31,27 @@ class TestAdminSite(unittest.TestCase):
                 ['dummy'])
 
     def test_getitem(self):
-        from ..interfaces import IModelAdmin
+        from ..interfaces import IModelAdmin, IAdminSite
         dummy = DummyModelAdmin()
-        self.config.registry.registerUtility(dummy,
+        self.config.registry.registerAdapter(dummy,
+                                             [IAdminSite],
                                              IModelAdmin,
                                              name='dummy')
         request = testing.DummyRequest()
         target = self._mekOne(request)
 
         result = target['dummy']
-        compare(result, dummy)
+        compare(result, C(testing.DummyResource))
 
 class DummyModelAdmin(object):
     def __init__(self, name=None, model=None, schema=None):
         self.name = name
         self.model = model
         self.schema = schema
+
+    def __call__(self, parent):
+        return testing.DummyResource(
+            name=self.name,
+            model=self.model,
+            schema=self.schema,
+            __parent__=parent)
