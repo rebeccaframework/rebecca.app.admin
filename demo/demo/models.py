@@ -21,6 +21,12 @@ class Person(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(10))
 
+    def __unicode__(self):
+        return self.name
+
+    def __html__(self):
+        return self.name
+
 
 def init(engine):
     DBSession.remove()

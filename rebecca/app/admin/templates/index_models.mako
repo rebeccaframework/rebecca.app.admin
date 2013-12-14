@@ -1,3 +1,5 @@
+<ul class="nav">
 %for item in request.context.items():
-${item}
+<li><a href="#">${item}</a></li>
 %endfor
+</ul>
