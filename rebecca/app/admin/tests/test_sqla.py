@@ -78,3 +78,38 @@ class TestDefaultTypeMapper(unittest.TestCase):
         compare(result.typ,
                 C(c.DateTime))
 
+
+
+class Testget_related_model_mapper(unittest.TestCase):
+    def _callFUT(self, *args, **kwargs):
+        from ..sqla import get_related_model_mapper
+        return get_related_model_mapper(*args, **kwargs)
+
+    def test_it(self):
+        from ..testing import Employee, Job
+        result = self._callFUT(Employee, 'job')
+
+        compare(result.class_, Job)
+
+
+class Testquery_relation(unittest.TestCase):
+    def setUp(self):
+        from ..testing import _setup
+        _setup()
+
+    def tearDown(self):
+        from ..testing import _teardown
+        _teardown()
+
+    def _callFUT(self, *args, **kwargs):
+        from ..sqla import query_relation
+        return query_relation(*args, **kwargs)
+
+    def test_it(self):
+        from ..testing import DBSession, Employee, Job
+        job = Job()
+        DBSession.add(job)
+        DBSession.flush()
+        result = self._callFUT(DBSession, Employee, 'job')
+        jobs = list(result)
+        compare(jobs, [job])

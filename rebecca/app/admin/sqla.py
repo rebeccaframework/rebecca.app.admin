@@ -47,6 +47,15 @@ class SQLAModelAdmin(object):
     def add(self, values):
         return self.repository.new_item(**values)
 
+    def search_relation(self, relation_name, limit=None, offset=None):
+        query = query_relation(self.sessionmaker, self.model, relation_name)
+        if limit is not None:
+            query = query.limit(limit)
+        if offset is not None:
+            query = query.offset(offset)
+        return query.all()
+
+
 class SimpleTypeConvert(object):
     def __init__(self, typ):
         typ = getattr(typ, 'impl', typ)
@@ -101,9 +110,31 @@ def create_schema(model, schema_type_mapper=default_type_mapper):
     mapper = class_mapper(model)
 
     schema = c.MappingSchema()
+
+    ## mapper.columnsよりもmapper.attrsのほうが正解か？
     for col in mapper.columns:
         if col.primary_key and col.autoincrement:
             continue
+
+        ## TODO: foreignkey
+        # relationship.mapper.class_ プロパティを使う？
+        # relationshipの場合は通常のschemaに加えて、検索機能つきのwidgetにする
+
         schema.add(schema_type_mapper(col))
 
     return schema
+
+
+def get_related_model_mapper(model, prop_name):
+    mapper = class_mapper(model)
+    if not mapper.has_property(prop_name):
+        return None
+    return mapper.attrs[prop_name].mapper
+
+def query_relation(session, model, prop_name):
+    """ search for named relationship property"""
+
+    related_mapper = get_related_model_mapper(model, prop_name)
+    if related_mapper is None:
+        return
+    return session.query(related_mapper.class_)

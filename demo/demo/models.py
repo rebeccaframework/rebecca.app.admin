@@ -3,10 +3,12 @@ from sqlalchemy import (
     Integer,
     Unicode,
     Date,
+    ForeignKey,
 )
 from sqlalchemy.orm import (
     sessionmaker,
     scoped_session,
+    relationship,
 )
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -22,6 +24,8 @@ class Person(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(10))
     birthday = Column(Date)
+    job_id = Column(Integer, ForeignKey('job.id'))
+    job = relationship('Job', backref='persons')
 
     def __unicode__(self):
         return self.name
