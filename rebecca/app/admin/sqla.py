@@ -33,7 +33,7 @@ class SQLAModelAdmin(object):
         self.model = model
         self.schema = create_schema(model)
         self.category = category
-
+        self.sessionmaker = sessionmaker
         # TODO: use inspect primary key
         self.repository = SQLARepository(model,
                                          "id", sessionmaker)

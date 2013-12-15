@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config, view_defaults
 from webhelpers2.html import HTML, escape, literal
 from deform import ValidationFailure
@@ -17,9 +17,16 @@ class ModelAdminView(object):
         """ show grid of members"""
         return dict()
 
+    @view_config(name='search', renderer='json')
     def search(self):
         """ search specified path_info properties """
-
+        if len(self.request.subpath) != 1:
+            return HTTPNotFound()
+        rel_name = self.request.subpath[0]
+        rel_items = self.context.search_relation(rel_name)
+        items = [(i.id, str(i)) for i in rel_items]  # TODO: inspect primary key
+        return dict(rel_name=rel_name,
+                    items=items)
 
     @view_config(name="new",
                  renderer="rebecca.app.admin:templates/new_model_form.mako")

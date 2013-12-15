@@ -55,3 +55,7 @@ class Employee(Base):
 class Job(Base):
     __tablename__ = 'job'
     id = Column(Integer, primary_key=True)
+    name = Column(Unicode(50))
+
+    def __str__(self):
+        return "Job id={self.id} name={self.name}".format(self=self)
