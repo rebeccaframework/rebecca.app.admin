@@ -18,18 +18,22 @@ Base = declarative_base()
 DBSession = scoped_session(
     sessionmaker(extension=ZopeTransactionExtension()))
 
+
 def _setup():
     engine = create_engine('sqlite:///')
     DBSession.remove()
     DBSession.configure(bind=engine)
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
+    return DBSession
+
 
 def _teardown():
     import transaction
     transaction.abort()
     DBSession.remove()
     Base.metadata.drop_all(bind=DBSession.bind)
+
 
 class DummySQLAModel(Base):
     __tablename__ = 'dummy_table'
@@ -51,6 +55,7 @@ class Employee(Base):
     id = Column(Integer, primary_key=True)
     job_id = Column(Integer, ForeignKey('job.id'))
     job = relationship('Job')
+
 
 class Job(Base):
     __tablename__ = 'job'
