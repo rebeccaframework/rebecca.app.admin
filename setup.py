@@ -28,4 +28,3 @@ setup(name="rebecca.app.admin",
           "testing": requires+tests_require,
       },
 )
-
