@@ -39,5 +39,7 @@ class Relation(Type):
                            'model': self.model.__name__}))
 
     def serialize(self, node, appstruct):
-        assert isinstance(appstruct, self.model)
+        if appstruct == colander.null:
+            return ""
+        assert isinstance(appstruct, self.model), appstruct
         return str(appstruct.id)  # TODO: introspection primary key

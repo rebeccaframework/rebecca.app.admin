@@ -42,6 +42,15 @@ class DummySQLAModel(Base):
     value = Column(Integer)
 
 
+class DummyChild(Base):
+    __tablename__ = 'child_table'
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(10))
+
+    dummy_id = Column(Integer, ForeignKey('dummy_table.id'))
+    dummy = relationship('DummySQLAModel', backref="children")
+
+
 class Person(Base):
     __tablename__ = 'persons'
     id = Column(Integer, primary_key=True)

@@ -79,7 +79,6 @@ class TestDefaultTypeMapper(unittest.TestCase):
                 C(c.DateTime))
 
 
-
 class Testget_related_model_mapper(unittest.TestCase):
     def _callFUT(self, *args, **kwargs):
         from ..sqla import get_related_model_mapper
@@ -113,3 +112,31 @@ class Testquery_relation(unittest.TestCase):
         result = self._callFUT(DBSession, Employee, 'job')
         jobs = list(result)
         compare(jobs, [job])
+
+
+class Testcreate_schema(unittest.TestCase):
+
+    def _callFUT(self, *args, **kwargs):
+        from ..sqla import create_schema
+        return create_schema(*args, **kwargs)
+
+    def test_many_to_one(self):
+        from ..testing import DummyChild
+        from ..schema import Relation
+        result = self._callFUT(DummyChild)
+
+        self.assertIn('name', result)
+        self.assertNotIn('dummy_id', result)
+        self.assertIn('dummy', result)
+        compare(result['dummy'].typ,
+                C(Relation))
+
+    def test_one_to_many(self):
+        from ..testing import DummySQLAModel
+        from ..schema import Relation
+        result = self._callFUT(DummySQLAModel)
+
+        self.assertIn('value', result)
+        self.assertIn('children', result)
+        compare(result['children'].typ,
+                C(Relation))

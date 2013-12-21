@@ -3,10 +3,12 @@ import colander as c
 from sqlalchemy import types
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.inspection import inspect
+from sqlalchemy.orm.properties import RelationshipProperty
 from rebecca.repository.sqla import SQLARepository
-
 from zope.interface import implementer
 from .interfaces import IModelAdmin, IModelAdminFactory
+from .schema import Relation
+from .widget import RelationWidget
 
 
 @implementer(IModelAdminFactory)
@@ -24,6 +26,7 @@ class SQLAModelAdminFactory(object):
             self.name, self.model, self.sessionmaker, self.category)
         admin.__parent__ = parent
         return admin
+
 
 @implementer(IModelAdmin)
 class SQLAModelAdmin(object):
@@ -82,6 +85,7 @@ class LengthTypeConvert(object):
                             validator=validator,
                             name=col.name)
 
+
 default_type_map = {
     types.Boolean: SimpleTypeConvert(c.Boolean),
     types.String: LengthTypeConvert(c.String),
@@ -110,6 +114,11 @@ def create_schema(model, schema_type_mapper=default_type_mapper):
     mapper = class_mapper(model)
 
     schema = c.MappingSchema()
+    relations = []
+    for attr in mapper.attrs:
+        if isinstance(attr, RelationshipProperty):
+            for local, remote in attr.local_remote_pairs:
+                relations.append(local)
 
     ## mapper.columnsよりもmapper.attrsのほうが正解か？
     for col in mapper.columns:
@@ -119,9 +128,17 @@ def create_schema(model, schema_type_mapper=default_type_mapper):
         ## TODO: foreignkey
         # relationship.mapper.class_ プロパティを使う？
         # relationshipの場合は通常のschemaに加えて、検索機能つきのwidgetにする
+        if col.foreign_keys and col in relations:
+            continue
 
         schema.add(schema_type_mapper(col))
 
+    for attr_name, attr in mapper.attrs.items():
+        if isinstance(attr, RelationshipProperty):
+            related_to = attr.mapper.class_
+            schema.add(c.SchemaNode(Relation(related_to, None),
+                                    name=attr_name,
+                                    widget=RelationWidget()))
     return schema
 
 
@@ -130,6 +147,7 @@ def get_related_model_mapper(model, prop_name):
     if not mapper.has_property(prop_name):
         return None
     return mapper.attrs[prop_name].mapper
+
 
 def query_relation(session, model, prop_name):
     """ search for named relationship property"""
