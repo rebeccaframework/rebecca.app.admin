@@ -45,3 +45,10 @@ class TestRelation(unittest.TestCase):
         msg = '${cstruct} is not found from ${model}'
         with ShouldRaise(colander.Invalid(None, msg)):
             target.deserialize(None, "a")
+
+    def test_deserialize_empty(self):
+        from ..testing import DummySQLAModel
+        target = self._makeOne(DummySQLAModel, self.session)
+        result = target.deserialize(None, "")
+
+        self.assertIsNone(result)

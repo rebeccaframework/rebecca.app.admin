@@ -20,6 +20,9 @@ class Relation(Type):
         return self.db_session.query(self.model)
 
     def deserialize(self, node, cstruct):
+        if cstruct in (colander.null, ''):
+            return None
+
         try:
             return self.query().filter(self.model.id == cstruct).one()
         except NoResultFound:
