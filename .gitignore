@@ -6,3 +6,4 @@ develop-eggs
 env
 *.egg-info
 *.sqlite
+eggs
