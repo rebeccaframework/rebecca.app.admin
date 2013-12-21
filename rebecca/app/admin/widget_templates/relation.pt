@@ -1,0 +1,15 @@
+<div i18n:domain="deform"
+      tal:omit-tag=""
+      tal:define="oid oid|field.oid;
+                  name name|field.name;
+                  css_class css_class|field.widget.css_class;
+                  style style|field.widget.style;">
+  <input id="${oid}"
+	 type="text"
+         name="${name}"
+         value="${cstruct}"
+         data-model="${model}">
+  <script>
+  </script>
+
+</div>

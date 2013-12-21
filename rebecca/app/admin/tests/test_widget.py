@@ -6,6 +6,11 @@ class DummyField(object):
     def __init__(self, name, typ):
         self.name = name
         self.typ = typ
+        self.called = []
+
+    def renderer(self, *args, **kwargs):
+        self.called.append(('renderer', args, kwargs))
+        return args, kwargs
 
 
 class DummyType(object):
@@ -24,13 +29,13 @@ class TestRelationWidget(unittest.TestCase):
 
     def test_serialize(self):
         from ..testing import DummySQLAModel
-        target = self._makeOne()
-        result = target.serialize(DummyField('dummy',
-                                             DummyType(DummySQLAModel)),
-                                  "<")
+        target = self._makeOne(url='@@search/dummy')
+        field = DummyField('dummy', DummyType(DummySQLAModel))
+        result = target.serialize(field, "<")
 
         compare(result,
-                '<input type="text"'
-                ' name="dummy"'
-                ' value="&lt;"'
-                ' data-model="dummysqlamodel">')
+                (('relation',),
+                 {'cstruct': '<',
+                  'field': field,
+                  'model': 'dummysqlamodel',
+                  'url': '@@search/dummy'}))
