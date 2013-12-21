@@ -1,5 +1,5 @@
 import unittest
-
+from testfixtures import ShouldRaise
 
 class TestRelation(unittest.TestCase):
 
@@ -42,4 +42,6 @@ class TestRelation(unittest.TestCase):
         import colander
         from ..testing import DummySQLAModel
         target = self._makeOne(DummySQLAModel, self.session)
-        self.assertRaises(colander.Invalid, target.deserialize, None, "a")
+        msg = '${cstruct} is not found from ${model}'
+        with ShouldRaise(colander.Invalid(None, msg)):
+            target.deserialize(None, "a")
