@@ -3,11 +3,6 @@ from colander import null
 
 
 class RelationWidget(Widget):
-    tmpl = ('<input type="text"'
-            ' name="{values[field].name}"'
-            ' value="{values[cstruct]}"'
-            ' data-model="{values[model]}">')
-
     url = ""
     template = 'relation'
 

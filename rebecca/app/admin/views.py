@@ -4,6 +4,7 @@ from webhelpers2.html import HTML, escape, literal
 from deform import ValidationFailure
 from deform.form import Form
 
+
 @view_defaults(route_name="rebecca.admin.site",
                context='.interfaces.IModelAdmin')
 class ModelAdminView(object):
