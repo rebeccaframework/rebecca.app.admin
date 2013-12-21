@@ -9,7 +9,9 @@
          name="${name}"
          value="${cstruct}"
          data-model="${model}">
+  <a href="${url}"><span class="glyphicon glyphicon-search"></span></a>
   <script>
+    var = '${url}';
   </script>
 
 </div>

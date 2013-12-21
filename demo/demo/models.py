@@ -58,5 +58,8 @@ def init(engine):
     for i in range(10):
         person = Person(name='person {0:03d}'.format(i))
         DBSession.add(person)
+    for i in range(5):
+        job = Job(name='job {0:03d}'.format(i))
+        DBSession.add(job)
     import transaction
     transaction.commit()

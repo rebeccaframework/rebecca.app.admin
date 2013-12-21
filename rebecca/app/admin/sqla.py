@@ -120,14 +120,10 @@ def create_schema(model, schema_type_mapper=default_type_mapper):
             for local, remote in attr.local_remote_pairs:
                 relations.append(local)
 
-    ## mapper.columnsよりもmapper.attrsのほうが正解か？
     for col in mapper.columns:
         if col.primary_key and col.autoincrement:
             continue
 
-        ## TODO: foreignkey
-        # relationship.mapper.class_ プロパティを使う？
-        # relationshipの場合は通常のschemaに加えて、検索機能つきのwidgetにする
         if col.foreign_keys and col in relations:
             continue
 
@@ -138,7 +134,8 @@ def create_schema(model, schema_type_mapper=default_type_mapper):
             related_to = attr.mapper.class_
             schema.add(c.SchemaNode(Relation(related_to, None),
                                     name=attr_name,
-                                    widget=RelationWidget()))
+                                    widget=RelationWidget(
+                                        url='@@search/' + attr_name)))
     return schema
 
 
