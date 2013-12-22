@@ -33,7 +33,8 @@ class ModelAdminView(object):
                  renderer="rebecca.app.admin:templates/new_model_form.mako")
     def new(self):
         """ create new model object """
-        form = Form(self.context.schema, buttons=('add',))
+        schema = self.context.schema.bind(db_session=self.context.db_session)
+        form = Form(schema, buttons=('add',))
         resources = form.get_widget_resources()
         js_resources = resources['js']
         css_resources = resources['css']

@@ -11,6 +11,13 @@ from sqlalchemy.orm.exc import (
 _ = translationstring.TranslationStringFactory('colander')
 
 
+def DeferredRelation(model):
+    def deferred_relation_type(node, kw):
+        db_session = kw['db_session']
+        return Relation(model, db_session)
+    return colander.deferred(deferred_relation_type)
+
+
 class Relation(Type):
     def __init__(self, model, db_session):
         self.model = model

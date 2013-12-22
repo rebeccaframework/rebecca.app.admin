@@ -7,7 +7,7 @@ from sqlalchemy.orm.properties import RelationshipProperty
 from rebecca.repository.sqla import SQLARepository
 from zope.interface import implementer
 from .interfaces import IModelAdmin, IModelAdminFactory
-from .schema import Relation
+from .schema import DeferredRelation
 from .widget import RelationWidget
 
 
@@ -40,6 +40,10 @@ class SQLAModelAdmin(object):
         # TODO: use inspect primary key
         self.repository = SQLARepository(model,
                                          "id", sessionmaker)
+
+    @property
+    def db_session(self):
+        return self.sessionmaker
 
     def items(self):
         return iter(self.repository)
@@ -132,7 +136,7 @@ def create_schema(model, schema_type_mapper=default_type_mapper):
     for attr_name, attr in mapper.attrs.items():
         if isinstance(attr, RelationshipProperty):
             related_to = attr.mapper.class_
-            schema.add(c.SchemaNode(Relation(related_to, None),
+            schema.add(c.SchemaNode(DeferredRelation(related_to),
                                     name=attr_name,
                                     widget=RelationWidget(
                                         url='@@search/' + attr_name)))
