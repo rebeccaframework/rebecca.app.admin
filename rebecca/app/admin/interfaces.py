@@ -16,6 +16,12 @@ class IModelAdmin(Interface):
     def add(values):
         """ add new item """
 
+
+class IModelDetail(Interface):
+    model = Attribute(u"model of detail")
+    schema = Attribute(u"schema for model")
+
+
 class IAdminSite(Interface):
     """ admin tool site"""
 

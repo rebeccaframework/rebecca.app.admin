@@ -1,3 +1,4 @@
+import logging
 import itertools
 import colander as c
 from sqlalchemy import types
@@ -6,9 +7,15 @@ from sqlalchemy.inspection import inspect
 from sqlalchemy.orm.properties import RelationshipProperty
 from rebecca.repository.sqla import SQLARepository
 from zope.interface import implementer
-from .interfaces import IModelAdmin, IModelAdminFactory
+from .interfaces import (
+    IModelAdmin,
+    IModelAdminFactory,
+    IModelDetail,
+)
 from .schema import DeferredRelation
 from .widget import RelationWidget
+
+logger = logging.getLogger(__name__)
 
 
 @implementer(IModelAdminFactory)
@@ -49,7 +56,18 @@ class SQLAModelAdmin(object):
         return iter(self.repository)
 
     def __getitem__(self, key):
-        return self.repository(key)
+        logger.debug('traversal {key}'.format(key=key))
+        try:
+            item = self.repository[key]
+            resource = SQLAModelDetail(self, key,
+                                       self.model, self.schema,
+                                       item, self.db_session)
+            logger.debug('{key} {resource}'.format(key=key,
+                                                   resource=resource))
+            return resource
+        except KeyError as e:
+            logger.debug('Key Error {e}'.format(e=e))
+            raise
 
     def add(self, values):
         return self.repository.new_item(**values)
@@ -61,6 +79,23 @@ class SQLAModelAdmin(object):
         if offset is not None:
             query = query.offset(offset)
         return query.all()
+
+
+@implementer(IModelDetail)
+class SQLAModelDetail(object):
+    def __init__(self, parent, key, model, schema, item, db_session):
+        self.__parent__ = parent
+        self.__name__ = self.key = key
+        self.model = model
+        self.schema = schema
+        self.item = item
+        self.db_session = db_session
+
+    @property
+    def appstruct(self):
+        mapper = class_mapper(self.model)
+        names = mapper.attrs.keys()
+        return {n: getattr(self.item, n) for n in names}
 
 
 class SimpleTypeConvert(object):
