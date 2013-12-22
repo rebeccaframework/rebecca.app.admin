@@ -41,12 +41,19 @@ class Job(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(10))
 
+    def __str__(self):
+        return self.name
+
+
 
 class Company(Base):
     __tablename__ = 'company'
 
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(10))
+
+    def __str__(self):
+        return self.name
 
 
 def init(engine):

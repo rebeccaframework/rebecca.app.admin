@@ -9,9 +9,61 @@
          name="${name}"
          value="${cstruct}"
          data-model="${model}">
-  <a href="${url}"><span class="glyphicon glyphicon-search"></span></a>
+  <a data-toggle="modal" data-target="#${oid}-search" data-search-url="${url}"><span class="glyphicon glyphicon-search"></span></a>
   <script>
-    var = '${url}';
+    (function ($, resultListEl) {
+      $(function() {
+        function displayResults(data, status, xhr) {
+          $(resultListEl).empty();
+          for (var i = 0; i < data.items.length; i++) {
+            var item = data.items[i];
+            var listItem = $('<li></li>');
+            listItem.text(item[1]);
+            listItem.data('item-id', item[0]);
+            listItem.addClass('${oid}-result-item');
+            listItem.appendTo($(resultListEl));
+          }
+        }
+        function onError(xhr, status, error) {
+          console.log(error);
+        }
+        function search(event) {
+          console.log($(event.relatedTarget).data('search-url'));
+          var url = $(event.relatedTarget).data('search-url');
+          $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: displayResults,
+            error: onError
+          });
+        }
+        $('#${oid}-search').on('show.bs.modal', search);
+        $('body').on('click', '.${oid}-result-item', function(event) {
+          var itemId = $(this).data('item-id');
+          $('#${oid}').val(itemId);
+          $('#${oid}-search').modal('hide');
+        });
+      })
+    })(jQuery, "#${oid}-search-result");
+    var url = '${url}';
   </script>
+  <div id="${oid}-search" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+	<div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">${name}</h4>
+	</div>
+	<div class="modal-body">
+	  <ul class="nav" id="${oid}-search-result">
+	  </ul>
+	</div>
+	<div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+      </div>
+    </div>
+  </div>
 
 </div>

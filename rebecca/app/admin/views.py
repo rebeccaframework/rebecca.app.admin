@@ -37,8 +37,8 @@ class ModelAdminView(object):
         resources = form.get_widget_resources()
         js_resources = resources['js']
         css_resources = resources['css']
-        js_links = [self.request.static_url(r) for r in js_resources ]
-        css_links = [self.request.static_url(r) for r in css_resources ]
+        js_links = [self.request.static_url(r) for r in js_resources]
+        css_links = [self.request.static_url(r) for r in css_resources]
         js_tags = [literal('<script type="text/javascript" src="%s"></script>' % link)
                    for link in js_links]
         css_tags = [literal('<link rel="stylesheet" href="%s"/>' % link)
@@ -48,7 +48,7 @@ class ModelAdminView(object):
         if self.request.method == 'POST':
             controls = self.request.params.items()
             try:
-                params =form.validate(controls)
+                params = form.validate(controls)
                 item = self.context.add(params)
                 del self.request.matchdict['traverse']
                 location = self.request.resource_url(
